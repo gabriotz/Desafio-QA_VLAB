@@ -3,6 +3,8 @@ class LoginPage {
   private passwordInput = '[data-testid="login-password"]'
   private submitButton = '[data-testid="login-button"]'
   private errorMessage = '[data-testid="error-message"]'
+  private registerTab = '[data-testid="tab-register"]'
+  private forgotPasswordLink = 'a[onclick="showResetPassword()"]'
 
   visit() {
     cy.visit('/')
@@ -24,6 +26,14 @@ class LoginPage {
     this.fillUsername(username)
     this.fillPassword(password)
     this.submit()
+  }
+
+  clickForgotPassword() {
+    cy.get(this.forgotPasswordLink).click()
+  }
+
+  clickRegisterTab() {
+    cy.get(this.registerTab).click()
   }
 
   getErrorMessage() {
