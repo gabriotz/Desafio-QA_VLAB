@@ -1,0 +1,9 @@
+{
+  "devDependencies": {
+    "@faker-js/faker": "^10.4.0",
+    "axe-core": "^4.11.3",
+    "cypress": "^15.14.1",
+    "cypress-axe": "^1.7.0",
+    "typescript": "^6.0.3"
+  }
+}

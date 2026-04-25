@@ -1,0 +1,39 @@
+services:
+  app:
+    build:
+      context: ../Desafio-QA
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    networks:
+      - qa-network
+    healthcheck:
+      disable: true
+
+  cypress:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    depends_on:
+      - app
+    environment:
+      - CYPRESS_baseUrl=http://app:3000
+    volumes:
+      - ./cypress:/app/cypress
+      - ./cypress.config.ts:/app/cypress.config.ts
+      - ./tsconfig.json:/app/tsconfig.json
+    networks:
+      - qa-network
+    stdin_open: true
+    tty: true
+    security_opt:
+      - no-new-privileges
+    healthcheck:
+      test: ["CMD-SHELL", "npx cypress verify || exit 1"]
+      interval: 30s
+      retries: 3
+      start_period: 10s
+
+networks:
+  qa-network:
+    driver: bridge
