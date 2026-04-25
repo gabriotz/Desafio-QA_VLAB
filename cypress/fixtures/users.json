@@ -1,0 +1,18 @@
+{
+  "valid": {
+    "username": "admin",
+    "password": "admin123"
+  },
+  "invalidPassword": {
+    "username": "admin",
+    "password": "senhaerrada"
+  },
+  "invalidUser": {
+    "username": "naoexiste",
+    "password": "qualquercoisa"
+  },
+  "emptyFields": {
+    "username": "",
+    "password": ""
+  }
+}
