@@ -2,7 +2,7 @@ class LoginPage {
   private usernameInput = '[data-testid="login-username"]'
   private passwordInput = '[data-testid="login-password"]'
   private submitButton = '[data-testid="login-button"]'
-  private errorMessage = '[data-testid="error-message"]'
+  private errorMessage = '[data-testid="message"]'  
   private registerTab = '[data-testid="tab-register"]'
   private forgotPasswordLink = 'a[onclick="showResetPassword()"]'
 
