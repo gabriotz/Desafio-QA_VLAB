@@ -1,0 +1,63 @@
+name: QA Automation
+
+on:
+  push:
+    branches: [main, features/**]
+  pull_request:
+    branches: [main]
+
+jobs:
+  cypress-tests:
+    name: Run Cypress Tests
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Start application with Docker Compose
+        run: docker compose up -d
+
+      - name: Wait for app to be ready
+        run: |
+          echo "Waiting for app..."
+          timeout 60 bash -c 'until curl -s http://localhost:3000 > /dev/null; do sleep 2; done'
+          echo "App is ready"
+
+      - name: Run Login tests
+        run: docker exec desafio-qa_vlab-cypress-1 npx cypress run --spec "cypress/e2e/auth/login.cy.ts"
+
+      - name: Run Register tests
+        run: docker exec desafio-qa_vlab-cypress-1 npx cypress run --spec "cypress/e2e/auth/register.cy.ts"
+        continue-on-error: true
+
+      - name: Run Coleta tests
+        run: docker exec desafio-qa_vlab-cypress-1 npx cypress run --spec "cypress/e2e/coleta/coleta.cy.ts"
+        continue-on-error: true
+
+      - name: Run API Health Check
+        run: docker exec desafio-qa_vlab-cypress-1 npx cypress run --spec "cypress/e2e/api/api-health.cy.ts"
+
+      - name: Run Accessibility tests
+        run: docker exec desafio-qa_vlab-cypress-1 npx cypress run --spec "cypress/e2e/accessibility/accessibility.cy.ts"
+        continue-on-error: true
+
+      - name: Upload screenshots on failure
+        uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: cypress/screenshots
+          retention-days: 7
+
+      - name: Upload videos
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: cypress-videos
+          path: cypress/videos
+          retention-days: 7
+
+      - name: Tear down Docker
+        if: always()
+        run: docker compose down
